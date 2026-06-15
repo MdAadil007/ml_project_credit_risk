@@ -94,7 +94,7 @@ with st.form("credit_risk_form"):
 
     with row2_col1:
         deliquency_ratio = st.number_input(
-            "Delinquency Ratio",
+            "Delinquency Ratio (%)",
             min_value=0.0,
             max_value=100.0,
             value=30.0,
@@ -133,10 +133,10 @@ with st.form("credit_risk_form"):
         )
     with row3_col3:
         avg_dpd_per_deliquency = st.number_input(
-            "Avg DPD",
+            "Avg DPD per Delinquency",
             min_value=0.0,
             max_value=365.0,
-            value=20.0,
+            value=5.0,
             step=1.0,
         )
 

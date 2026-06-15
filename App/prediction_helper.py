@@ -96,7 +96,7 @@ def prepare_input(
     loan_to_income = loan_amount / income if income > 0 else 0
 
     input_data = {
-        "deliquency_ratio": deliquency_ratio,
+        "deliquency_ratio": deliquency_ratio / 100,
         "loan_to_income": loan_to_income,
         "avg_dpd_per_deliquency": avg_dpd_per_deliquency,
         "loan_tenure_months": loan_tenure_months,
