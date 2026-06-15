@@ -7,28 +7,25 @@ st.set_page_config(
     layout="wide"
 )
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
-    .main-title{
-        text-align:center;
-        font-size:52px;
-        font-weight:800;
-        margin-bottom:10px;
-    }
+.main-title{
+    text-align:center;
+    font-size:52px;
+    font-weight:800;
+    margin-bottom:10px;
+}
 
-    .sub-title{
-        text-align:center;
-        font-size:22px;
-        color:gray;
-        margin-bottom:40px;
-    }
+.sub-title{
+    text-align:center;
+    font-size:20px;
+    color:gray;
+    margin-bottom:40px;
+}
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown(
     '<div class="main-title">CREDIT RISK MODELLING</div>',
@@ -94,8 +91,8 @@ with st.form("credit_form"):
     c7, c8, c9 = st.columns(3)
 
     with c7:
-        credit_utilization_per_income = st.number_input(
-            "Credit Utilization Per Income",
+        credit_utilization_ratio = st.number_input(
+            "Credit Utilization Ratio",
             min_value=0.0,
             value=30.0
         )
@@ -142,11 +139,11 @@ with st.form("credit_form"):
             ["Secured", "Unsecured"]
         )
 
-    submit = st.form_submit_button(
+    submitted = st.form_submit_button(
         "Calculate Risk"
     )
 
-if submit:
+if submitted:
 
     probability, credit_score, rating, loan_to_income = predict(
         age,
@@ -155,7 +152,7 @@ if submit:
         loan_tenure_months,
         avg_dpd_per_deliquency,
         deliquency_ratio,
-        credit_utilization_per_income,
+        credit_utilization_ratio,
         number_of_open_accounts,
         residence_type,
         loan_purpose,

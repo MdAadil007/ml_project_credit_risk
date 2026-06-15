@@ -18,7 +18,7 @@ def prepare_input(
     loan_tenure_months,
     avg_dpd_per_deliquency,
     deliquency_ratio,
-    credit_utilization_per_income,
+    credit_utilization_ratio,
     number_of_open_accounts,
     residence_type,
     loan_purpose,
@@ -28,11 +28,11 @@ def prepare_input(
     loan_to_income = loan_amount / income if income > 0 else 0
 
     input_data = {
+        "credit_utilization_ratio": credit_utilization_ratio,
         "deliquency_ratio": deliquency_ratio,
         "loan_to_income": loan_to_income,
         "avg_dpd_per_deliquency": avg_dpd_per_deliquency,
         "loan_tenure_months": loan_tenure_months,
-        "credit_utilization_per_income": credit_utilization_per_income,
         "age": age,
         "number_of_open_accounts": number_of_open_accounts,
 
@@ -57,12 +57,13 @@ def prepare_input(
 
     df = pd.DataFrame([input_data])
 
-    # exact training order
+    # exact same order as training
     df = df.reindex(columns=features, fill_value=0)
 
-    # scale using saved scaler
+    scaled_array = scaler.transform(df)
+
     df = pd.DataFrame(
-        scaler.transform(df),
+        scaled_array,
         columns=features
     )
 
@@ -76,7 +77,7 @@ def predict(
     loan_tenure_months,
     avg_dpd_per_deliquency,
     deliquency_ratio,
-    credit_utilization_per_income,
+    credit_utilization_ratio,
     number_of_open_accounts,
     residence_type,
     loan_purpose,
@@ -90,14 +91,16 @@ def predict(
         loan_tenure_months,
         avg_dpd_per_deliquency,
         deliquency_ratio,
-        credit_utilization_per_income,
+        credit_utilization_ratio,
         number_of_open_accounts,
         residence_type,
         loan_purpose,
         loan_type
     )
 
-    probability = float(model.predict_proba(input_df)[0][1])
+    probability = float(
+        model.predict_proba(input_df)[0][1]
+    )
 
     credit_score = int(
         round(
@@ -105,7 +108,10 @@ def predict(
         )
     )
 
-    credit_score = max(300, min(900, credit_score))
+    credit_score = max(
+        300,
+        min(900, credit_score)
+    )
 
     if credit_score >= 750:
         rating = "Excellent"
