@@ -29,7 +29,7 @@ def prepare_input(
 
     input_data = {
         "credit_utilization_ratio": credit_utilization_ratio,
-        "deliquency_ratio": deliquency_ratio,
+        "deliquency_ratio": deliquency_ratio / 100,
         "loan_to_income": loan_to_income,
         "avg_dpd_per_deliquency": avg_dpd_per_deliquency,
         "loan_tenure_months": loan_tenure_months,

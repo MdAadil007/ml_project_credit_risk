@@ -47,7 +47,7 @@ with st.form("credit_form"):
         age = st.number_input(
             "Age",
             min_value=18,
-            max_value=100,
+            max_value=70,
             value=28
         )
 
@@ -70,7 +70,8 @@ with st.form("credit_form"):
     with c4:
         loan_tenure_months = st.number_input(
             "Loan Tenure (Months)",
-            min_value=1,
+            min_value=6,
+            max_value=59,
             value=36
         )
 
@@ -78,13 +79,15 @@ with st.form("credit_form"):
         avg_dpd_per_deliquency = st.number_input(
             "Avg DPD Per Deliquency",
             min_value=0.0,
-            value=20.0
+            max_value=10.0,
+            value=5.0
         )
 
     with c6:
         deliquency_ratio = st.number_input(
-            "Deliquency Ratio",
+            "Deliquency Ratio (%)",
             min_value=0.0,
+            max_value=100.0,
             value=30.0
         )
 
@@ -100,7 +103,8 @@ with st.form("credit_form"):
     with c8:
         number_of_open_accounts = st.number_input(
             "Open Loan Accounts",
-            min_value=0,
+            min_value=1,
+            max_value=4,
             value=2
         )
 
