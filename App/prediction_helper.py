@@ -123,13 +123,18 @@ def prepare_input(
 def predict_credit_risk(input_df):
     model = MODEL_DATA["model"]
     scaler = MODEL_DATA.get("scaler")
-    cols_to_scale = MODEL_DATA.get("cols_to_scale", [])
 
     prediction_df = input_df.copy()
 
-    if scaler is not None and cols_to_scale:
-        existing_scale_cols = [col for col in cols_to_scale if col in prediction_df.columns]
-        prediction_df[existing_scale_cols] = scaler.transform(prediction_df[existing_scale_cols])
+    if scaler is not None:
+        scaler_features = getattr(scaler, "feature_names_in_", FEATURE_COLUMNS)
+        scaler_features = list(scaler_features)
+        prediction_df = prediction_df[scaler_features]
+        prediction_df = pd.DataFrame(
+            scaler.transform(prediction_df),
+            columns=scaler_features,
+            index=input_df.index,
+        )
 
     if hasattr(model, "predict_proba"):
         default_probability = model.predict_proba(prediction_df)[0][1]

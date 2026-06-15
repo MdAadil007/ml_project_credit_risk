@@ -90,6 +90,12 @@ with st.form("credit_risk_form"):
             value=2560000.0,
             step=10000.0,
         )
+        loan_to_income = loan_amount / income if income > 0 else 0
+        st.text_input(
+            "Loan to Income Ratio",
+            value=f"{loan_to_income:.2f}",
+            disabled=True,
+        )
         avg_dpd_per_deliquency = st.number_input(
             "Avg DPD",
             min_value=0.0,
