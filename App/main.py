@@ -67,15 +67,22 @@ with st.form("credit_form"):
         residence_type = st.selectbox("Residence Type", ["Owned", "Rented"])
 
     c10, c11, c12 = st.columns(3)
-    with c10:
-        loan_purpose = st.selectbox("Loan Purpose", ["Education", "Home", "Personal"])
-    with c11:
-        loan_type = st.selectbox("Loan Type", ["Secured", "Unsecured"])
-    with c12:
-        st.write("")
-        st.write("")
+with c10:
+    loan_to_income = loan_amount / income if income > 0 else 0.0
+    st.number_input(
+        "Loan to Income Ratio",
+        value=float(loan_to_income),
+        disabled=True,
+        format="%.2f"
+    )
 
+with c11:
+    loan_purpose = st.selectbox("Loan Purpose", ["Education", "Home", "Personal"])
+
+with c12:
+    loan_type = st.selectbox("Loan Type", ["Secured", "Unsecured"])
     submit = st.form_submit_button("Calculate Risk")
+    
 
 if submit:
     if income <= 0:

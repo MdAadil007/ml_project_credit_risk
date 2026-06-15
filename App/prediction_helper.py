@@ -1,20 +1,13 @@
 import joblib
-import numpy as np
 import pandas as pd
 from pathlib import Path
 
-# Works whether the notebook artifact is in /Artifacts or /App/Artifacts
 MODEL_PATH = Path(__file__).resolve().parent / "Artifacts" / "model_data.joblib"
 
-# Load saved objects
 model_data = joblib.load(MODEL_PATH)
 model = model_data["model"]
+scaler = model_data["scaler"]
 features = list(model_data["features"])
-scaler = model_data.get("scaler", None)
-cols_to_scale = model_data.get("cols_to_scale", [])
-
-# Use only columns that actually exist in the final model input
-scale_cols = [col for col in cols_to_scale if col in features]
 
 
 def prepare_input(
@@ -30,10 +23,8 @@ def prepare_input(
     loan_purpose,
     loan_type
 ):
-    # Derived feature
     loan_to_income = loan_amount / income if income > 0 else 0.0
 
-    # Create the exact feature row used by the model
     input_data = {
         "deliquency_ratio": deliquency_ratio,
         "loan_to_income": loan_to_income,
@@ -52,12 +43,11 @@ def prepare_input(
 
     df = pd.DataFrame([input_data])
 
-    # Make sure columns are in the same order as training
+    # Make sure the columns are in exactly the same order as training
     df = df.reindex(columns=features, fill_value=0)
 
-    # Scale only the columns that were scaled in training
-    if scaler is not None and len(scale_cols) > 0:
-        df[scale_cols] = scaler.transform(df[scale_cols])
+    # Scale the full 13-feature input, because the model was trained on that
+    df[features] = scaler.transform(df[features])
 
     return df, loan_to_income
 
@@ -89,14 +79,11 @@ def predict(
         loan_type
     )
 
-    # XGBoost prediction
-    default_probability = float(model.predict_proba(input_df)[0][1])
+    probability = float(model.predict_proba(input_df)[0][1])
 
-    # Credit score on 300-900 scale
-    credit_score = int(round(300 + (1 - default_probability) * 600))
+    credit_score = int(round(300 + (1 - probability) * 600))
     credit_score = max(300, min(900, credit_score))
 
-    # Rating bands
     if credit_score < 500:
         rating = "Poor"
     elif credit_score < 650:
@@ -106,4 +93,4 @@ def predict(
     else:
         rating = "Excellent"
 
-    return default_probability, credit_score, rating, loan_to_income
+    return probability, credit_score, rating, loan_to_income
